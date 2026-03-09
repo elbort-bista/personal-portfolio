@@ -202,7 +202,14 @@ export async function registerRoutes(
 
   app.post(api.blogs.create.path, requireAuth, async (req, res) => {
     try {
-      const input = api.blogs.create.input.extend({ published: z.boolean().optional() }).parse(req.body);
+      const blogCreateSchema = z.object({
+        title: z.string(),
+        excerpt: z.string().optional().nullable(),
+        content: z.string(),
+        imageUrl: z.string().optional().nullable(),
+        published: z.boolean().optional(),
+      });
+      const input = blogCreateSchema.parse(req.body);
       const blog = await storage.createBlog(input);
       res.status(201).json(blog);
     } catch (err) {

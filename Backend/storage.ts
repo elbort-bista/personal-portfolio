@@ -45,72 +45,72 @@ import { db } from "./db";
 
 export class DatabaseStorage implements IStorage {
   async getSkills(): Promise<Skill[]> {
-    return await db.select().from(skills);
+    return await (db as any).select().from(skills as any) as Skill[];
   }
 
   async getExperience(): Promise<Experience[]> {
-    return await db.select().from(experience);
+    return await (db as any).select().from(experience as any) as Experience[];
   }
 
   async getEducation(): Promise<Education[]> {
-    return await db.select().from(education);
+    return await (db as any).select().from(education as any) as Education[];
   }
 
   async getCertifications(): Promise<Certification[]> {
-    return await db.select().from(certifications);
+    return await (db as any).select().from(certifications as any) as Certification[];
   }
 
   async createSkill(skill: InsertSkill): Promise<Skill> {
-    const [row] = await db.insert(skills).values(skill).returning();
+    const [row] = await (db as any).insert(skills as any).values(skill as any).returning();
     return row;
   }
   async updateSkill(id: number, updates: Partial<InsertSkill>): Promise<Skill> {
-    const [row] = await db.update(skills).set(updates).where(eq(skills.id, id)).returning();
+    const [row] = await (db as any).update(skills as any).set(updates as any).where(eq((skills as any).id, id)).returning();
     return row;
   }
   async deleteSkill(id: number): Promise<void> {
-    await db.delete(skills).where(eq(skills.id, id));
+    await (db as any).delete(skills as any).where(eq((skills as any).id, id));
   }
   async createExperience(exp: InsertExperience): Promise<Experience> {
-    const [row] = await db.insert(experience).values(exp).returning();
+    const [row] = await (db as any).insert(experience as any).values(exp as any).returning();
     return row;
   }
   async updateExperience(id: number, updates: Partial<InsertExperience>): Promise<Experience> {
-    const [row] = await db.update(experience).set(updates).where(eq(experience.id, id)).returning();
+    const [row] = await (db as any).update(experience as any).set(updates as any).where(eq((experience as any).id, id)).returning();
     return row;
   }
   async deleteExperience(id: number): Promise<void> {
-    await db.delete(experience).where(eq(experience.id, id));
+    await (db as any).delete(experience as any).where(eq((experience as any).id, id));
   }
   async createEducation(ed: InsertEducation): Promise<Education> {
-    const [row] = await db.insert(education).values(ed).returning();
+    const [row] = await (db as any).insert(education as any).values(ed as any).returning();
     return row;
   }
   async updateEducation(id: number, updates: Partial<InsertEducation>): Promise<Education> {
-    const [row] = await db.update(education).set(updates).where(eq(education.id, id)).returning();
+    const [row] = await (db as any).update(education as any).set(updates as any).where(eq((education as any).id, id)).returning();
     return row;
   }
   async deleteEducation(id: number): Promise<void> {
-    await db.delete(education).where(eq(education.id, id));
+    await (db as any).delete(education as any).where(eq((education as any).id, id));
   }
   async createCertification(cert: InsertCertification): Promise<Certification> {
-    const [row] = await db.insert(certifications).values(cert).returning();
+    const [row] = await (db as any).insert(certifications as any).values(cert as any).returning();
     return row;
   }
   async updateCertification(id: number, updates: Partial<InsertCertification>): Promise<Certification> {
-    const [row] = await db.update(certifications).set(updates).where(eq(certifications.id, id)).returning();
+    const [row] = await (db as any).update(certifications as any).set(updates as any).where(eq((certifications as any).id, id)).returning();
     return row;
   }
   async deleteCertification(id: number): Promise<void> {
-    await db.delete(certifications).where(eq(certifications.id, id));
+    await (db as any).delete(certifications as any).where(eq((certifications as any).id, id));
   }
   async getBlogs(): Promise<Blog[]> {
-    return await db.select().from(blogs).orderBy(desc(blogs.createdAt));
+    return await (db as any).select().from(blogs as any).orderBy(desc((blogs as any).createdAt)) as Blog[];
   }
 
   async createBlog(blog: InsertBlog): Promise<Blog> {
-    const [newBlog] = await db
-      .insert(blogs)
+    const [newBlog] = await (db as any)
+      .insert(blogs as any)
       .values({
         ...blog,
         excerpt: (blog as any).excerpt ?? (blog as any).content?.slice(0, 220),
@@ -120,26 +120,26 @@ export class DatabaseStorage implements IStorage {
     return newBlog;
   }
   async updateBlog(id: number, updates: Partial<InsertBlog>): Promise<Blog> {
-    const [row] = await db.update(blogs).set(updates as any).where(eq(blogs.id, id)).returning();
+    const [row] = await (db as any).update(blogs as any).set(updates as any).where(eq((blogs as any).id, id)).returning();
     return row;
   }
   async deleteBlog(id: number): Promise<void> {
-    await db.delete(blogs).where(eq(blogs.id, id));
+    await (db as any).delete(blogs as any).where(eq((blogs as any).id, id));
   }
 
   async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
-    const [newMessage] = await db.insert(contactMessages).values(message).returning();
+    const [newMessage] = await (db as any).insert(contactMessages as any).values(message as any).returning();
     return newMessage;
   }
 
   async getContactMessages(): Promise<ContactMessage[]> {
-    return await db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
+    return await (db as any).select().from(contactMessages as any).orderBy(desc((contactMessages as any).createdAt)) as ContactMessage[];
   }
 
   async getProfile(): Promise<Profile> {
-    const [p] = await db.select().from(profile);
+    const [p] = await (db as any).select().from(profile as any);
     if (!p) {
-      const [newP] = await db.insert(profile).values({}).returning();
+      const [newP] = await (db as any).insert(profile as any).values({}).returning();
       return newP;
     }
     return p;
@@ -147,9 +147,9 @@ export class DatabaseStorage implements IStorage {
 
   async updateProfile(updates: Partial<InsertProfile>): Promise<Profile> {
     const p = await this.getProfile();
-    const [updated] = await db.update(profile)
-      .set(updates)
-      .where(eq(profile.id, p.id))
+    const [updated] = await (db as any).update(profile as any)
+      .set(updates as any)
+      .where(eq((profile as any).id, p.id))
       .returning();
     return updated;
   }
@@ -157,19 +157,19 @@ export class DatabaseStorage implements IStorage {
   async seedData(): Promise<void> {
     const existingSkills = await this.getSkills();
     if (existingSkills.length === 0) {
-      await db.insert(skills).values([
+      await (db as any).insert(skills as any).values([
         { name: "Python", category: "Technical" },
         { name: "Java", category: "Technical" },
         { name: "Web Application Security", category: "Technical" },
         { name: "OWASP Top 10", category: "Technical" },
       ]);
 
-      await db.insert(certifications).values([
+      await (db as any).insert(certifications as any).values([
         { name: "CompTIA Security+", year: "2024", certificateUrl: "https://example.com/cert1" },
         { name: "Certified Cyber Evasion Professional (CCEP)", year: "2024", certificateUrl: "https://example.com/cert2" },
       ]);
 
-      await db.insert(blogs).values([
+      await (db as any).insert(blogs as any).values([
         {
           title: "The Art of Offensive Security",
           content: "In this briefing, we explore the core methodologies used by offensive security researchers to identify zero-day vulnerabilities in modern web applications. From reconnaissance to exploitation, we cover the full lifecycle of an attack.",
@@ -182,7 +182,7 @@ export class DatabaseStorage implements IStorage {
         }
       ]);
 
-      await db.insert(experience).values([
+      await (db as any).insert(experience as any).values([
         {
           title: "Security Analyst",
           company: "Cube Technologies Pvt. Ltd.",
@@ -193,7 +193,7 @@ export class DatabaseStorage implements IStorage {
         }
       ]);
 
-      await db.insert(education).values([
+      await (db as any).insert(education as any).values([
         {
           degree: "Bachelor Of Computer Science",
           institution: "Lincoln University College",
@@ -203,37 +203,43 @@ export class DatabaseStorage implements IStorage {
       
       await this.getProfile();
     }
+    const existingUsers = await (db as any).select().from(users as any);
+    if (!existingUsers || existingUsers.length === 0) {
+      const email = process.env.ADMIN_EMAIL || "admin@local";
+      const password = process.env.ADMIN_PASSWORD || "admin123";
+      await this.addUser(email, password);
+    }
   }
 
   async getUserByEmail(email: string): Promise<{ email: string } | null> {
-    const [u] = await db.select().from(users).where(eq(users.email, email));
+    const [u] = await (db as any).select().from(users as any).where(eq((users as any).email, email));
     return u ? { email: u.email } : null;
   }
   async listUsers(): Promise<Array<{ id: number; email: string }>> {
-    return await db.select({ id: users.id, email: users.email }).from(users);
+    return await (db as any).select({ id: (users as any).id, email: (users as any).email }).from(users as any);
   }
   async getUserById(id: number): Promise<User | null> {
-    const [u] = await db.select().from(users).where(eq(users.id, id));
+    const [u] = await (db as any).select().from(users as any).where(eq((users as any).id, id));
     return u || null;
   }
   async addUser(email: string, password: string): Promise<void> {
     const passwordHash = await bcrypt.hash(password, 10);
-    await db.insert(users).values({ email, passwordHash });
+    await (db as any).insert(users as any).values({ email, passwordHash });
   }
   async deleteUser(id: number): Promise<void> {
-    await db.delete(users).where(eq(users.id, id));
+    await (db as any).delete(users as any).where(eq((users as any).id, id));
   }
   async changePassword(email: string, currentPassword: string, newPassword: string): Promise<boolean> {
-    const [u] = await db.select().from(users).where(eq(users.email, email));
+    const [u] = await (db as any).select().from(users as any).where(eq((users as any).email, email));
     if (!u) return false;
     const ok = await bcrypt.compare(currentPassword, u.passwordHash);
     if (!ok) return false;
     const newHash = await bcrypt.hash(newPassword, 10);
-    await db.update(users).set({ passwordHash: newHash }).where(eq(users.email, email));
+    await (db as any).update(users as any).set({ passwordHash: newHash }).where(eq((users as any).email, email));
     return true;
   }
   async validateCredentials(email: string, password: string): Promise<boolean> {
-    const [u] = await db.select().from(users).where(eq(users.email, email));
+    const [u] = await (db as any).select().from(users as any).where(eq((users as any).email, email));
     if (!u) return false;
     return await bcrypt.compare(password, u.passwordHash);
   }
