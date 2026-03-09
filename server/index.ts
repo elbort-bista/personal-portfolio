@@ -12,6 +12,7 @@ const app = express();
 const httpServer = createServer(app);
 
 app.set("etag", false);
+app.set("trust proxy", process.env.VERCEL ? 1 : false);
 
 declare module "http" {
   interface IncomingMessage {
@@ -150,15 +151,19 @@ app.use(passport.session());
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || "5000", 10);
-  const host = process.env.HOST || "0.0.0.0";
-  httpServer.listen(
-    {
-      port,
-      host,
-    },
-    () => {
-      log(`serving on http://${host}:${port}`);
-    },
-  );
+  if (!process.env.VERCEL) {
+    const port = parseInt(process.env.PORT || "5000", 10);
+    const host = process.env.HOST || "0.0.0.0";
+    httpServer.listen(
+      {
+        port,
+        host,
+      },
+      () => {
+        log(`serving on http://${host}:${port}`);
+      },
+    );
+  }
 })();
+
+export default app;
