@@ -1,4 +1,9 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist/public"
+  "installCommand": "cd Frontend && npm ci",
+  "buildCommand": "cd Frontend && npm run build",
+  "outputDirectory": "Frontend/dist/public",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

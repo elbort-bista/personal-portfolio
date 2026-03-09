@@ -1,2 +1,2 @@
-import app from "../server/index";
+import app from "../Backend/index";
 export default app;

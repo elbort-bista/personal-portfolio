@@ -1,14 +1,13 @@
 {
-  "name": "rest-express-root",
+  "name": "rest-express",
   "version": "1.0.0",
   "type": "module",
-  "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "tsx Backend/index.ts",
-    "build": "tsx Frontend/scripts/build.ts",
-    "start": "node Frontend/dist/index.cjs",
-    "check": "tsc -p Frontend/tsconfig.json",
+    "dev": "tsx ../Backend/index.ts",
+    "build": "tsx ./scripts/build.ts",
+    "start": "node dist/index.cjs",
+    "check": "tsc",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
