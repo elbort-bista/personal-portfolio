@@ -90,7 +90,7 @@ export default function Home() {
             </p>
 
             {!((profile as any)?.hideHeroButtons) && (
-              <div className="flex flex-wrap gap-4">
+              <div className="relative z-20 flex flex-wrap gap-4">
                 <Link to="contact" smooth={true} duration={500}>
                   <Button className="h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-mono font-bold tracking-wider rounded-none clip-path-polygon">
                     INITIATE_CONTACT
@@ -111,25 +111,25 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative block"
+            className="relative hidden md:block"
           >
-            <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[500px] lg:h-[500px] mx-auto flex items-center justify-center">
+            <div className="relative w-60 h-60 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[500px] lg:h-[500px] mx-auto flex items-center justify-center">
               <div className="absolute inset-0 bg-primary/20 rounded-none blur-[60px]" />
-              <div className="relative z-10 grid grid-cols-2 gap-4 p-8 border border-primary/20 bg-card/30 backdrop-blur-md rounded-none rotate-3 hover:rotate-0 transition-transform duration-500">
-                <div className="bg-background/80 p-6 rounded-none border border-primary/10 flex flex-col items-center justify-center gap-4 aspect-square group relative">
-                  <ShieldCheck className="w-16 h-16 text-primary" />
+              <div className="relative z-10 grid grid-cols-2 gap-4 p-6 md:p-8 border border-primary/20 bg-card/30 backdrop-blur-md rounded-none md:rotate-3 hover:rotate-0 transition-transform duration-500">
+                <div className="bg-background/80 p-5 md:p-6 rounded-none border border-primary/10 flex flex-col items-center justify-center gap-4 aspect-square group relative">
+                  <ShieldCheck className="w-12 h-12 md:w-16 md:h-16 text-primary" />
                   <span className="font-mono text-sm font-bold">VAPT</span>
                 </div>
-                <div className="bg-background/80 p-6 rounded-none border border-primary/10 flex flex-col items-center justify-center gap-4 aspect-square">
-                  <Bug className="w-16 h-16 text-primary" />
+                <div className="bg-background/80 p-5 md:p-6 rounded-none border border-primary/10 flex flex-col items-center justify-center gap-4 aspect-square">
+                  <Bug className="w-12 h-12 md:w-16 md:h-16 text-primary" />
                   <span className="font-mono text-sm font-bold">Exploitation</span>
                 </div>
-                <div className="bg-background/80 p-6 rounded-none border border-primary/10 flex flex-col items-center justify-center gap-4 aspect-square">
-                  <Lock className="w-16 h-16 text-primary" />
+                <div className="bg-background/80 p-5 md:p-6 rounded-none border border-primary/10 flex flex-col items-center justify-center gap-4 aspect-square">
+                  <Lock className="w-12 h-12 md:w-16 md:h-16 text-primary" />
                   <span className="font-mono text-sm font-bold">Coder</span>
                 </div>
-                <div className="bg-background/80 p-6 rounded-none border border-primary/10 flex flex-col items-center justify-center gap-4 aspect-square">
-                  <Server className="w-16 h-16 text-primary" />
+                <div className="bg-background/80 p-5 md:p-6 rounded-none border border-primary/10 flex flex-col items-center justify-center gap-4 aspect-square">
+                  <Server className="w-12 h-12 md:w-16 md:h-16 text-primary" />
                   <span className="font-mono text-sm font-bold">Network Sec</span>
                 </div>
               </div>

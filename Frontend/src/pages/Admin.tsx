@@ -12,9 +12,10 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Upload, FileText, Image as ImageIcon, LogOut, MessageSquare, Users, Wrench, FilePlus, ShieldCheck, Server, Bug } from "lucide-react";
 import { z } from "zod";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
 import { RichTextEditor } from "@/components/RichTextEditor";
+import { api } from "@shared/routes";
 
 export default function Admin() {
   useEffect(() => {
@@ -195,22 +196,26 @@ export default function Admin() {
 
   const onCertificationSubmit = async (values: InsertCertification) => {
     await apiRequest("POST", "/api/certifications", values);
-    window.location.reload();
+    certificationForm.reset();
+    await queryClient.invalidateQueries({ queryKey: [api.certifications.list.path] });
   };
 
   const onExperienceSubmit = async (values: InsertExperience) => {
     await apiRequest("POST", "/api/experience", values);
-    window.location.reload();
+    experienceForm.reset();
+    await queryClient.invalidateQueries({ queryKey: [api.experience.list.path] });
   };
 
   const onEducationSubmit = async (values: InsertEducation) => {
     await apiRequest("POST", "/api/education", values);
-    window.location.reload();
+    educationForm.reset();
+    await queryClient.invalidateQueries({ queryKey: [api.education.list.path] });
   };
 
   const onSkillSubmit = async (values: InsertSkill) => {
     await apiRequest("POST", "/api/skills", values);
-    window.location.reload();
+    skillForm.reset();
+    await queryClient.invalidateQueries({ queryKey: [api.skills.list.path] });
   };
 
   const [section, setSection] = useState<"dashboard" | "messages" | "users" | "blog" | "assets" | "certifications" | "experience" | "education" | "skills">("dashboard");
@@ -327,8 +332,9 @@ export default function Admin() {
               <h2 className="text-2xl font-mono font-bold mb-4">Certifications</h2>
               <div className="mb-4">
                 <Form {...certificationForm}>
-                  <form onSubmit={certificationForm.handleSubmit(onCertificationSubmit)} className="grid md:grid-cols-4 gap-3">
+                  <form onSubmit={certificationForm.handleSubmit(onCertificationSubmit)} className="grid md:grid-cols-5 gap-3">
                     <FormField control={certificationForm.control} name="name" render={({ field }) => (<FormItem><FormLabel className="font-mono text-xs">NAME</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField control={certificationForm.control} name="issuer" render={({ field }) => (<FormItem><FormLabel className="font-mono text-xs">ISSUER</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>)} />
                     <FormField control={certificationForm.control} name="year" render={({ field }) => (<FormItem><FormLabel className="font-mono text-xs">YEAR</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>)} />
                     <FormField control={certificationForm.control} name="certificateUrl" render={({ field }) => (<FormItem><FormLabel className="font-mono text-xs">URL</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>)} />
                     <div className="flex items-end"><Button type="submit" className="w-full bg-primary">ADD</Button></div>
@@ -341,14 +347,14 @@ export default function Admin() {
                     <CardContent className="p-4 flex items-center justify-between">
                       <div className="font-mono">
                         <div className="text-sm">{c.name}</div>
-                        <div className="text-xs text-muted-foreground">{c.year}</div>
+                        <div className="text-xs text-muted-foreground">{c.issuer ? `${c.issuer} • ` : ""}{c.year}</div>
                       </div>
                       {c.certificateUrl && (
                         <a className="text-primary text-xs font-mono border border-primary/30 px-2 py-1 rounded" href={c.certificateUrl} target="_blank" rel="noopener noreferrer">VIEW</a>
                       )}
                       <div className="flex gap-2">
-                        <Button variant="outline" onClick={async () => { const name = prompt("Name", c.name || ""); const year = prompt("Year", c.year || ""); const url = prompt("URL", c.certificateUrl || ""); if (name) { await apiRequest("PATCH", `/api/certifications/${c.id}`, { name, year, certificateUrl: url }); window.location.reload(); } }}>EDIT</Button>
-                        <Button variant="destructive" onClick={async () => { await apiRequest("DELETE", `/api/certifications/${c.id}`); window.location.reload(); }}>DELETE</Button>
+                        <Button variant="outline" onClick={async () => { const name = prompt("Name", c.name || ""); const issuer = prompt("Issuer", c.issuer || ""); const year = prompt("Year", c.year || ""); const url = prompt("URL", c.certificateUrl || ""); if (name) { await apiRequest("PATCH", `/api/certifications/${c.id}`, { name, issuer, year, certificateUrl: url }); await queryClient.invalidateQueries({ queryKey: [api.certifications.list.path] }); } }}>EDIT</Button>
+                        <Button variant="destructive" onClick={async () => { await apiRequest("DELETE", `/api/certifications/${c.id}`); await queryClient.invalidateQueries({ queryKey: [api.certifications.list.path] }); }}>DELETE</Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -381,8 +387,8 @@ export default function Admin() {
                       <div className="text-xs text-muted-foreground">{e.location} • {e.startDate} {e.endDate ? `→ ${e.endDate}` : ""}</div>
                       <div className="mt-2 text-sm">{e.description}</div>
                       <div className="mt-3 flex gap-2">
-                        <Button variant="outline" onClick={async () => { const title = prompt("Title", e.title || ""); const company = prompt("Company", e.company || ""); const location = prompt("Location", e.location || ""); const startDate = prompt("Start", e.startDate || ""); const endDate = prompt("End", e.endDate || ""); const description = prompt("Description", e.description || ""); await apiRequest("PATCH", `/api/experience/${e.id}`, { title, company, location, startDate, endDate, description }); window.location.reload(); }}>EDIT</Button>
-                        <Button variant="destructive" onClick={async () => { await apiRequest("DELETE", `/api/experience/${e.id}`); window.location.reload(); }}>DELETE</Button>
+                        <Button variant="outline" onClick={async () => { const title = prompt("Title", e.title || ""); const company = prompt("Company", e.company || ""); const location = prompt("Location", e.location || ""); const startDate = prompt("Start", e.startDate || ""); const endDate = prompt("End", e.endDate || ""); const description = prompt("Description", e.description || ""); await apiRequest("PATCH", `/api/experience/${e.id}`, { title, company, location, startDate, endDate, description }); await queryClient.invalidateQueries({ queryKey: [api.experience.list.path] }); }}>EDIT</Button>
+                        <Button variant="destructive" onClick={async () => { await apiRequest("DELETE", `/api/experience/${e.id}`); await queryClient.invalidateQueries({ queryKey: [api.experience.list.path] }); }}>DELETE</Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -411,8 +417,8 @@ export default function Admin() {
                       <div className="font-mono text-sm font-bold">{ed.institution}</div>
                       <div className="text-xs text-muted-foreground">{ed.degree} • {ed.year}</div>
                       <div className="mt-3 flex gap-2">
-                        <Button variant="outline" onClick={async () => { const institution = prompt("Institution", ed.institution || ""); const degree = prompt("Degree", ed.degree || ""); const year = prompt("Year", ed.year || ""); await apiRequest("PATCH", `/api/education/${ed.id}`, { institution, degree, year }); window.location.reload(); }}>EDIT</Button>
-                        <Button variant="destructive" onClick={async () => { await apiRequest("DELETE", `/api/education/${ed.id}`); window.location.reload(); }}>DELETE</Button>
+                        <Button variant="outline" onClick={async () => { const institution = prompt("Institution", ed.institution || ""); const degree = prompt("Degree", ed.degree || ""); const year = prompt("Year", ed.year || ""); await apiRequest("PATCH", `/api/education/${ed.id}`, { institution, degree, year }); await queryClient.invalidateQueries({ queryKey: [api.education.list.path] }); }}>EDIT</Button>
+                        <Button variant="destructive" onClick={async () => { await apiRequest("DELETE", `/api/education/${ed.id}`); await queryClient.invalidateQueries({ queryKey: [api.education.list.path] }); }}>DELETE</Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -444,8 +450,8 @@ export default function Admin() {
                       </div>
                       <div className="text-xs font-mono">{s.proficiency ?? 0}%</div>
                       <div className="flex gap-2">
-                        <Button variant="outline" onClick={async () => { const name = prompt("Name", s.name || ""); const category = prompt("Category", s.category || ""); const proficiencyStr = prompt("Proficiency", String(s.proficiency ?? 100)); const proficiency = Number(proficiencyStr || "0"); await apiRequest("PATCH", `/api/skills/${s.id}`, { name, category, proficiency }); window.location.reload(); }}>EDIT</Button>
-                        <Button variant="destructive" onClick={async () => { await apiRequest("DELETE", `/api/skills/${s.id}`); window.location.reload(); }}>DELETE</Button>
+                        <Button variant="outline" onClick={async () => { const name = prompt("Name", s.name || ""); const category = prompt("Category", s.category || ""); const proficiencyStr = prompt("Proficiency", String(s.proficiency ?? 100)); const proficiency = Number(proficiencyStr || "0"); await apiRequest("PATCH", `/api/skills/${s.id}`, { name, category, proficiency }); await queryClient.invalidateQueries({ queryKey: [api.skills.list.path] }); }}>EDIT</Button>
+                        <Button variant="destructive" onClick={async () => { await apiRequest("DELETE", `/api/skills/${s.id}`); await queryClient.invalidateQueries({ queryKey: [api.skills.list.path] }); }}>DELETE</Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -555,16 +561,16 @@ export default function Admin() {
                       const imageUrl = prompt("Image URL", b.imageUrl || "") || "";
                       const content = prompt("Content", b.content || "") || "";
                       await apiRequest("PATCH", `/api/blogs/${b.id}`, { title, imageUrl, content });
-                      window.location.reload();
+                      await queryClient.invalidateQueries({ queryKey: [api.blogs.list.path] });
                     }}>EDIT</Button>
                     <Button variant="outline" onClick={async () => {
                       await apiRequest("PATCH", `/api/blogs/${b.id}`, { published: !b.published });
-                      window.location.reload();
+                      await queryClient.invalidateQueries({ queryKey: [api.blogs.list.path] });
                     }}>{b.published ? "MAKE_PRIVATE" : "MAKE_PUBLIC"}</Button>
                     <Button variant="destructive" onClick={async () => {
                       if (confirm("Delete this blog?")) {
                         await apiRequest("DELETE", `/api/blogs/${b.id}`);
-                        window.location.reload();
+                        await queryClient.invalidateQueries({ queryKey: [api.blogs.list.path] });
                       }
                     }}>DELETE</Button>
                   </div>

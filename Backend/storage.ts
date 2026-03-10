@@ -274,7 +274,7 @@ class MemoryStorage implements IStorage {
   }
 
   async createSkill(skill: InsertSkill): Promise<Skill> {
-    const row: Skill = { id: (this._skills.length + 1) as any, proficiency: skill.proficiency ?? (100 as any), ...skill } as any;
+    const row: Skill = { id: (this._skills.length + 1) as any, proficiency: (skill as any).proficiency ?? (100 as any), ...(skill as any) } as any;
     this._skills.push(row);
     return row;
   }
@@ -333,9 +333,9 @@ class MemoryStorage implements IStorage {
     const newBlog: Blog = {
       id: (this._blogs.length + 1) as any,
       createdAt: new Date() as any,
-      title: blog.title,
+      title: (blog as any).title,
       excerpt: (blog as any).excerpt ?? (blog as any).content?.slice(0, 220),
-      content: blog.content,
+      content: (blog as any).content,
       imageUrl: (blog as any).imageUrl ?? null,
       published: (blog as any).published ?? true,
     };
@@ -352,11 +352,11 @@ class MemoryStorage implements IStorage {
   }
 
   async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
-    const newMessage: ContactMessage = {
+    const newMessage = {
       id: (Math.random() * 1e9) as any,
       createdAt: new Date() as any,
-      ...message,
-    };
+      ...(message as any),
+    } as ContactMessage;
     this._messages.push(newMessage);
     return newMessage;
   }
@@ -573,7 +573,7 @@ export const storage: IStorage =
         async createSkill(skill: InsertSkill): Promise<Skill> {
           const col = await this._col("skills");
           const res = await col.insertOne(skill as any);
-          return { id: (res.insertedId as any), proficiency: skill.proficiency ?? (100 as any), ...skill } as any;
+          return { id: (res.insertedId as any), proficiency: (skill as any).proficiency ?? (100 as any), ...(skill as any) } as any;
         }
         async updateSkill(id: number, updates: Partial<InsertSkill>): Promise<Skill> {
           const col = await this._col("skills");

@@ -96,6 +96,12 @@ export function Navbar() {
               CV.pdf
             </a>
           )}
+          <a
+            href="/login"
+            className="text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-primary cursor-pointer transition-all hover:-translate-y-0.5"
+          >
+            Admin
+          </a>
         </div>
 
         {/* Mobile Toggle */}
@@ -155,6 +161,14 @@ export function Navbar() {
                   </a>
                 );
               })}
+          <a
+            href="/login"
+            onClick={() => setIsOpen(false)}
+            className="text-base font-mono text-muted-foreground hover:text-primary py-2 px-4 hover:bg-primary/5 rounded transition-colors"
+          >
+            <span className="text-primary mr-2">&gt;</span>
+            Admin
+          </a>
             </div>
           </motion.div>
         )}
