@@ -71,7 +71,9 @@ app.use(passport.session());
   });
 
   if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
+    if (!process.env.VERCEL) {
+      serveStatic(app);
+    }
   } else {
     const { setupVite } = await import("./vite");
     await setupVite(httpServer, app);

@@ -38,7 +38,7 @@ async function buildAll() {
 
   console.log("building client...");
   await viteBuild({
-    configFile: path.resolve("scripts", "vite.config.ts"),
+    configFile: path.resolve(import.meta.dirname, "vite.config.ts"),
   });
 
   console.log("building server...");
@@ -50,13 +50,13 @@ async function buildAll() {
   const externals = allDeps.filter((dep) => !allowlist.includes(dep));
 
   await esbuild({
-    entryPoints: ["../Backend/index.ts"],
+    entryPoints: [path.resolve(import.meta.dirname, "..", "..", "Backend", "index.ts")],
     platform: "node",
     bundle: true,
     format: "cjs",
-    outfile: "dist/index.cjs",
-    tsconfig: path.resolve("tsconfig.json"),
-    nodePaths: [path.resolve("node_modules")],
+    outfile: path.resolve(import.meta.dirname, "..", "dist", "index.cjs"),
+    tsconfig: path.resolve(import.meta.dirname, "..", "tsconfig.json"),
+    nodePaths: [path.resolve(import.meta.dirname, "..", "node_modules")],
     define: {
       "process.env.NODE_ENV": '"production"',
     },
